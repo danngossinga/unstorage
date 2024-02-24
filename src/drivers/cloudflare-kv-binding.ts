@@ -6,6 +6,14 @@ export interface KVOptions {
 
   /** Adds prefix to all stored keys */
   base?: string;
+
+  /**
+   * Default TTL for all items in seconds.
+   *
+   * As of January 2022, expiration targets that are less than 60 seconds into the future are not supported.
+   * @see https://developers.cloudflare.com/kv/api/write-key-value-pairs/#expiring-keys
+   */
+  ttl?: number;
 }
 
 // https://developers.cloudflare.com/workers/runtime-apis/kv
@@ -35,10 +43,11 @@ export default defineDriver((opts: KVOptions) => {
       const binding = getKVBinding(opts.binding);
       return binding.get(key);
     },
-    setItem(key, value) {
+    setItem(key, value, tOptions) {
       key = r(key);
       const binding = getKVBinding(opts.binding);
-      return binding.put(key, value);
+      const ttl = tOptions?.ttl ?? opts.ttl;
+      return binding.put(key, value, ttl ? { expirationTtl: ttl } : undefined);
     },
     removeItem(key) {
       key = r(key);

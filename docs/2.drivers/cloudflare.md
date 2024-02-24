@@ -47,6 +47,9 @@ const storage = createStorage({
 
 - `binding`: KV binding or name of namespace. Default is `STORAGE`.
 - `base`: Adds prefix to all stored keys
+- `ttl`: Set a key’s expiration time to live using a relative number of seconds from the current time.
+
+**Note:** As of January 2022, expiration targets that are less than 60 seconds into the future are not supported. See [Expiring Keys](https://developers.cloudflare.com/kv/api/write-key-value-pairs/#expiring-keys) for more information.
 
 ## Cloudflare KV (http)
 
